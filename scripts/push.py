@@ -84,7 +84,10 @@ def main():
 
     curated = json.loads(Path(args.input).read_text(encoding="utf-8"))
     secrets = load_secrets()
-    service = args.service or secrets.get("service") or "pushplus"
+    service = args.service or secrets.get("service")
+    if service is None:
+        # 未显式指定时，根据环境里哪个密钥在来自动推断，避免云端默认错服务
+        service = "serverchan" if os.environ.get("SERVERCHAN_SENDKEY") else "pushplus"
     if service == "pushplus":
         key = os.environ.get("PUSHPLUS_TOKEN") or secrets.get("pushplus_token")
     else:
