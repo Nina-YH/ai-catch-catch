@@ -1,0 +1,6 @@
+scripts/secrets.json
+data/
+site/
+__pycache__/
+*.pyc
+.DS_Store

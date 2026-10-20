@@ -1,0 +1,39 @@
+{
+  "ai_keywords": [
+    "ai", "artificial intelligence", "llm", "gpt", "openai", "anthropic", "claude",
+    "gemini", "deepmind", "machine learning", "neural network", "transformer",
+    "chatbot", "chatgpt", "copilot", "generative", "diffusion", "llama", "mistral",
+    "grok", "deepseek", "multimodal", "reasoning", "foundation model", "ai agent",
+    "agent", "agents", "agentic"
+  ],
+  "sources": [
+    {
+      "name": "Hacker News",
+      "type": "hn",
+      "filter": true,
+      "weight": 1.3,
+      "has_comments": true
+    },
+    {
+      "name": "TechCrunch AI",
+      "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
+      "filter": false,
+      "weight": 1.2,
+      "has_comments": false
+    },
+    {
+      "name": "The Verge AI",
+      "url": "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml",
+      "filter": false,
+      "weight": 1.1,
+      "has_comments": false
+    },
+    {
+      "name": "MIT Tech Review",
+      "url": "https://www.technologyreview.com/feed/",
+      "filter": true,
+      "weight": 1.0,
+      "has_comments": false
+    }
+  ]
+}

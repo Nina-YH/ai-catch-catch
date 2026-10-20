@@ -1,0 +1,58 @@
+name: Daily AI Catch Catch
+
+on:
+  schedule:
+    # 北京时间 07:00 = UTC 23:00（前一天）
+    - cron: '0 23 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      TZ: Asia/Shanghai
+      DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+      SERVERCHAN_SENDKEY: ${{ secrets.SERVERCHAN_SENDKEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Fetch sources
+        run: python scripts/catch.py --hours 36 --top 20
+      - name: Fetch HN comments
+        run: python scripts/comments.py --from-raw
+      - name: Generate curated digest (LLM)
+        run: python scripts/gen.py
+      - name: Render dark page
+        run: python scripts/render.py --input "data/curated/$(date +%F).json"
+      - name: Push to WeChat
+        run: python scripts/push.py --input "data/curated/$(date +%F).json" --url "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
